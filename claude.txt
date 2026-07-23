@@ -1,0 +1,254 @@
+Here are compact examples for each, building on your nav/CSS setup.
+
+## 1. Page banner (hero section)
+
+```html
+<header class="banner">
+  <h1>The Lounge</h1>
+  <p>Your spot for rankings and reviews</p>
+</header>
+```
+```css
+.banner {
+  background-color: #222;
+  color: white;
+  text-align: center;
+  padding: 60px 20px;
+}
+```
+Put this right after your `<body>` tag, above or below the nav depending on the layout you want.
+
+## 2. Nav linking to other pages (not just `#anchors`)
+
+Right now your links use `#home`, `#news` etc — those jump to sections *within the same page*. To go to different HTML files instead:
+
+```html
+<div class="topnav">
+  <a class="active" href="index.html">Home</a>
+  <a href="news.html">News</a>
+  <a href="contact.html">Contact</a>
+  <a href="about.html">About</a>
+</div>
+```
+You'd then create `news.html`, `contact.html`, `about.html` as separate files in the same folder as `index.html`. Each is its own full HTML document (with its own `<head>`, `<body>`, etc.), and can link to the same `styles.css` so they all share your nav styling.
+
+## 3. A table
+
+```html
+<table>
+  <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Anime</th>
+      <th>Score</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Example Show</td>
+      <td>9.5</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Another Show</td>
+      <td>9.1</td>
+    </tr>
+  </tbody>
+</table>
+```
+```css
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  text-align: left;
+}
+```
+
+## 4. Pulling data from the internet (JavaScript `fetch`)
+
+This calls a public API and drops the result into your page. Example using a free test API:
+
+```html
+<div id="quote-box">Loading...</div>
+
+<script>
+  fetch('https://api.quotable.io/random')
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('quote-box').textContent = data.content;
+    })
+    .catch(error => {
+      document.getElementById('quote-box').textContent = "Couldn't load quote.";
+    });
+</script>
+```
+What's happening: `fetch()` makes a network request, `.then(response => response.json())` parses the reply as JSON, and the next `.then` takes that data and writes it into your `<div>` using its `id`. This is the core pattern almost all "pull from the internet" features use — weather widgets, live scores, etc. — just pointed at different APIs.
+
+Want me to combine these into your actual `index.html` so you can see them working together, or keep them as separate reference snippets for now?
+
+////
+
+Let me also update `styles.css` so the new pieces (banner, table, quote box) actually look styled, not just the nav:A couple of notes on what I added to the CSS:
+
+- **`clear: both;` on `.banner`** — your nav links use `float: left`, which can cause layout weirdness for whatever comes right after them if you don't "clear" the float. This keeps the banner from overlapping the nav.
+- **Table gets a white background** — since your `<body>` background is a dark green, an unstyled table would blend in and be hard to read.
+
+Both files are in the outputs folder — keep them in the same directory as before and open `index.html` in your browser to see everything together.One heads-up: the `news.html`, `contact.html`, and `about.html` pages the nav links to don't exist yet — those links will 404 until you create them. Want me to scaffold basic versions of those too?
+
+```index
+<!DOCTYPE HTML>
+<!-- This is a comment -->
+<html lang="en-US">
+    <head>
+        <title>The Lounge</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body style="background-color:rgb(52, 93, 78)">
+
+        <!-- ===== NAV ===== -->
+        <div class="topnav">
+            <a class="active" href="index.html">Home</a>
+            <a href="news.html">News</a>
+            <a href="contact.html">Contact</a>
+            <a href="about.html">About</a>
+        </div>
+
+        <!-- ===== BANNER ===== -->
+        <header class="banner">
+            <h1>The Lounge</h1>
+            <p>Your spot for rankings and reviews</p>
+        </header>
+
+        <!-- ===== RANKINGS TABLE ===== -->
+        <div class="rankings">
+            <h2>Rankings</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Anime</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Example Show</td>
+                        <td>9.5</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Another Show</td>
+                        <td>9.1</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- These were commented-out placeholders from before —
+                 uncomment and duplicate the table above for each category
+            <h3>Games</h3>
+            <hr>
+            <h3>TV Shows</h3>
+            <hr>
+            <h3>Movies</h3>
+            -->
+        </div>
+
+        <!-- ===== LIVE DATA FROM THE INTERNET ===== -->
+        <div class="quote-section">
+            <h2>Quote of the Moment</h2>
+            <div id="quote-box">Loading...</div>
+        </div>
+
+        <script>
+            fetch('https://api.quotable.io/random')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('quote-box').textContent = data.content;
+                })
+                .catch(error => {
+                    document.getElementById('quote-box').textContent = "Couldn't load quote.";
+                });
+        </script>
+
+    </body>
+</html>
+```
+```styles
+/* Add a black background color to the top navigation */
+.topnav {
+  background-color: #333;
+  overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+  background-color: #04AA6D;
+  color: white;
+}
+
+/* ===== Page banner ===== */
+.banner {
+  background-color: #222;
+  color: white;
+  text-align: center;
+  padding: 60px 20px;
+  clear: both; /* clears the floated nav links above */
+}
+
+/* ===== Rankings section ===== */
+.rankings {
+  max-width: 700px;
+  margin: 30px auto;
+  color: white;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  color: black;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+/* ===== Quote box ===== */
+.quote-section {
+  max-width: 700px;
+  margin: 30px auto;
+  color: white;
+  text-align: center;
+}
+
+#quote-box {
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: 20px;
+  border-radius: 6px;
+  font-style: italic;
+}
+```
